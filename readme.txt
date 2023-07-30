@@ -3,7 +3,7 @@ Contributors: colintemple
 Donate link: http://colintemple.com/endmark/
 Tags: end mark, end of article, symbol	
 Requires at least: 2.2.2
-Tested up to: 3.5.1
+Tested up to: 6.2.2
 Stable tag: trunk
 
 Endmark adds a trailing symbol to the end of your posts and pages.
