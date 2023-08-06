@@ -1,5 +1,5 @@
 === Plugin Name ===
-Contributors: colintemple	
+Contributors: colintemple, menj
 Donate link: http://colintemple.com/endmark/
 Tags: end mark, end of article, symbol	
 Requires at least: 2.2.2
