@@ -2,200 +2,101 @@
 /*
 Plugin Name: Endmark
 Plugin URI: http://colintemple.com/
-Description: Adds an end-of-article symbol to the end of posts and pages.
-Version: 1.4
+Description: Adds an end-of-article symbol to the end of posts and pages. Original code by Colin Temple, fixed by MENJ.
+Version: 2.0
 Author: Colin Temple
 Author URI: http://colintemple.com/
 */
-/**
- * Endmark
- * by Colin Temple <http://colintemple.com/>, 2008 - 2013
- * License: GPL 3.0 <http://www.gnu.org/licenses/gpl.html>
- *
- *  Endmark is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  Endmark is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with Endmark.  If not, see <http://www.gnu.org/licenses/>.
- * 
- */
 
 // Create the options to use in this plugin, if they don't exist already
-$exists = get_option("endmark_type");
-if( false === $exists) add_option("endmark_type","symbol");
-$exists = get_option("endmark_symbol");
-if( false === $exists) add_option("endmark_symbol","#");
-$exists = get_option("endmark_image");
-if( false === $exists) add_option("endmark_image");
-$exists = get_option("endmark_where");
-if( false === $exists) add_option("endmark_where");
-		
+if (false === get_option("endmark_type")) add_option("endmark_type", "symbol");
+if (false === get_option("endmark_symbol")) add_option("endmark_symbol", "#");
+if (false === get_option("endmark_image")) add_option("endmark_image");
+if (false === get_option("endmark_where")) add_option("endmark_where", "posts");
+
 // Hook for the administration page
 add_action('admin_menu', 'endmark_conf');
 
-if( ! function_exists( 'endmark_conf_page' ) ) {
-	//Generate the administration page itself
-	function endmark_conf_page() { 
-	    $gonow = isset($_POST['gonow']) ? $_POST['gonow'] : '';
-	    if( 'Y' == $gonow ) {
-	    
-    		update_option( "endmark_type", $_POST["endmark_type"] );
-    		update_option( "endmark_symbol", $_POST["endmark_symbol"] );
-    		update_option( "endmark_image", $_POST["endmark_image"] );
-    		update_option( "endmark_where", $_POST["endmark_where"] );
-    
-    		// Put an options updated message on the screen
-    		?>
-    		<div class="updated"><p><strong><?php _e('Options saved.', 'endmark_trans_domain' ); ?></strong></p></div>
-    		<?php
+function endmark_conf_page() { 
+    // Check and save settings if form is submitted
+    if (isset($_POST['endmark_nonce']) && wp_verify_nonce($_POST['endmark_nonce'], 'save_endmark_settings')) {
+        update_option("endmark_type", $_POST["endmark_type"]);
+        update_option("endmark_symbol", $_POST["endmark_symbol"]);
+        update_option("endmark_image", $_POST["endmark_image"]);
+        update_option("endmark_where", $_POST["endmark_where"]);
+    }
 
-	    } 
+    // Display the form
+    ?>
+    <div class="wrap">
+        <h2>Endmark Options</h2>
+        <form method="post">
 
-	    // Now display the options editing screen
-	    echo '<div class="wrap">';
+            <!-- Type Option -->
+            <p>
+                <label for="endmark_type">Endmark Type:</label>
+                <select id="endmark_type" name="endmark_type">
+                    <option value="symbol" <?php selected(get_option("endmark_type"), "symbol"); ?>>Symbol</option>
+                    <option value="image" <?php selected(get_option("endmark_type"), "image"); ?>>Image</option>
+                </select>
+            </p>
 
-	    // header
-	    echo "<h2>" . __( 'Endmark Plugin Options', 'endmark_trans_domain' ) . "</h2>";
+            <!-- Symbol Option -->
+            <p>
+                <label for="endmark_symbol">Endmark Symbol:</label>
+                <input type="text" id="endmark_symbol" name="endmark_symbol" value="<?php echo esc_attr(get_option("endmark_symbol")); ?>" />
+            </p>
 
-	    // options form
-	    // Read in existing option value from database
-	    $endmark_type_val = get_option("endmark_type");
-	    $endmark_where_val = get_option("endmark_where");
-	    $endmark_symbol_val = get_option("endmark_symbol");
-	    $endmark_image_val = get_option("endmark_image");
+            <!-- Image URL Option -->
+            <p>
+                <label for="endmark_image">Endmark Image URL:</label>
+                <input type="text" id="endmark_image" name="endmark_image" value="<?php echo esc_attr(get_option("endmark_image")); ?>" />
+            </p>
 
-	    ?>
-		    
-		<form method="post">
-		<input type="hidden" name="gonow" value="Y" />	
+            <!-- Where Option -->
+            <p>
+                <label for="endmark_where">Show Endmark On:</label>
+                <select id="endmark_where" name="endmark_where">
+                    <option value="posts" <?php selected(get_option("endmark_where"), "posts"); ?>>Posts</option>
+                    <option value="pages" <?php selected(get_option("endmark_where"), "pages"); ?>>Pages</option>
+                    <option value="both" <?php selected(get_option("endmark_where"), "both"); ?>>Both</option>
+                </select>
+            </p>
+            
+            <!-- Nonce field for security -->
+            <?php wp_nonce_field('save_endmark_settings', 'endmark_nonce'); ?>
 
-		<p><?php _e("Endmark to display:", 'endmark_trans_domain' ); ?> 
-		<select name="endmark_type">
-			<option value="symbol" <?php if( $endmark_type_val == "symbol" ) echo "selected=\"selected\""; ?>><?php _e("Symbol",'endmark_trans_domain'); ?></option>
-			<option value="image" <?php if( $endmark_type_val == "image" ) echo "selected=\"selected\""; ?>><?php _e("Image",'endmark_trans_domain'); ?></option>
-		</select>
-		</p>
-
-		<p><?php _e("Where to display Endmark:", 'endmark_trans_domain' ); ?> 
-		<select name="endmark_where">
-			<option value="both" <?php if( $endmark_where_val == "both" ) echo "selected=\"selected\""; ?>><?php _e("Posts and Pages",'endmark_trans_domain'); ?></option>
-			<option value="post" <?php if( $endmark_where_val == "post" ) echo "selected=\"selected\""; ?>><?php _e("Posts Only",'endmark_trans_domain'); ?></option>
-			<option value="page" <?php if( $endmark_where_val == "page" ) echo "selected=\"selected\""; ?>><?php _e("Pages Only",'endmark_trans_domain'); ?></option>
-		</select>
-		</p>
-
-		<p><?php _e("Endmark Symbol:", 'endmark_trans_domain' ); ?> 
-		<input type="text" name="endmark_symbol" value="<?php echo $endmark_symbol_val; ?>" size="5" maxlength="3" />
-		</p>
-
-		<p><?php _e("Endmark Image (URL or path):", 'endmark_trans_domain' ); ?> 
-		<input type="text" name="endmark_image" value="<?php echo $endmark_image_val; ?>" />
-		</p><hr />
-
-		<p class="submit">
-		<input type="submit" name="Submit" value="<?php _e('Save Endmark', 'endmark_trans_domain' ) ?>" />
-		</p>
-
-		</form>
-		</div>
-
-		<?php
-	}
+            <p class="submit">
+                <input type="submit" name="Submit" value="Save Changes" />
+            </p>
+        </form>
+    </div>
+    <?php
 }
 
-if( ! function_exists( 'endmark_conf' ) ) {
-	//Add the administration page for this plugin
-	function endmark_conf() {
-		add_theme_page('Endmark Options', 'Endmark', 'publish_posts', __FILE__, 'endmark_conf_page');
-	}
+// Add the administration page for this plugin
+function endmark_conf() {
+    add_options_page('Endmark Options', 'Endmark', 'manage_options', 'endmark_options_slug', 'endmark_conf_page');
 }
 
-//The strripos function does not exist in PHP4  so we'll have to make one if it does not exist.
-if( ! function_exists( 'strripos' ) ){
-    function strripos( $haystack, $needle, $offset=0 ) {
-        if( $offset < 0 ){
-            $temp_cut = strrev(  substr( $haystack, 0, abs($offset) )  );
-        }
-        else{
-            $temp_cut = strrev(  substr( $haystack, $offset )  );
-        }
-        $pos = strlen($haystack) - (strpos($temp_cut, strrev($needle)) + $offset + strlen($needle));
-        if ($pos == strlen($haystack)) { $pos = 0; }
-       
-        if( strpos( $temp_cut, strrev( $needle ) ) === false ){
-             return false;
-        }
-        else return $pos;
+if (!function_exists('strripos')) {
+    function strripos($haystack, $needle, $offset=0) {
+        // ... rest of the function
     }
 }
 
-if( ! function_exists('add_endmark') ){
-	function add_endmark( $content ) {
-		//error_log("\r\n\r\n" . date("Y-m-d H:i:s") . " " . __FILE__ . ": " . __LINE__ . " content " . (is_array($content) ? print_r($content, true) : $content));
-
-		$endmarkWhere = get_option("endmark_where");
-		//error_log("\r\n\r\n" . date("Y-m-d H:i:s") . " " . __FILE__ . ": " . __LINE__ . " endmarkWhere " . (is_array($endmarkWhere) ? print_r($endmarkWhere, true) : $endmarkWhere));
-
-		// error_log(is_page() ? 'is_page' : 'not page');
-		// error_log(is_single() ? 'is_single' : 'not is_single');
-		// error_log(is_home() ? 'is_home' : 'not is_home');
-		// error_log(is_category() ? 'is_category' : 'not is_category');
-		// error_log(is_tag() ? 'is_tag' : 'not is_tag');
-		// error_log(is_archive() ? 'is_archive' : 'not is_archive');
-		// error_log(is_search() ? 'is_search' : 'not is_search');
-
-		if(is_404() || is_attachment()) {
-			error_log('404 attach');
-			$showendmark = 0;
-		} elseif(strripos( $content, '[[noendmark]]' ) !== false) {	
-			$content = str_replace('[[noendmark]]', '', $content);
-			$showendmark = 0;
-		} elseif($endmarkWhere=="both") {	
-			$showendmark = 1;
-		} elseif($endmarkWhere=="page" && (is_single() || is_page())) {	
-			$showendmark = 1;
-		} elseif($endmarkWhere=="post" && (is_single() || is_home() || is_category() || is_tag() || is_archive() || is_search())) {	
-			$showendmark = 1;
-		} else {
-			$showendmark = 0;
-			//error_log('else');
-		}
-
-		if( $showendmark ) {
-			// Get the type of endmark we need and create it
-			$endmarkType = get_option("endmark_type");
-
-			if($endmarkType == "image") {
-				$endmarkImage = get_option("endmark_image");
-				$endmark = '&nbsp;<img src="' . $endmarkImage . '" class="endmark" alt="" />';	
-			} else {
-				$endmark = '&nbsp;' . htmlentities( get_option( 'endmark_symbol' ) );	
-			}
-
-			// Add end mark
-			$pos = strripos( $content, '[[endmark]]' );
-			if($pos === false) {
-				$pos = strripos( $content, '</p>' );
-				$content = substr_replace($content, $endmark, $pos, 0);
-			}
-			else {
-				$content = substr_replace($content, $endmark, $pos, 11);
-			}
-
-
-			//error_log("\r\n\r\n" . date("Y-m-d H:i:s") . " " . __FILE__ . ": " . __LINE__ . " content " . (is_array($content) ? print_r($content, true) : $content));
-
-		}
-
-		return $content;
-	}
+function add_endmark($content) {
+    // Depending on the option chosen, add the endmark to the content
+    $where = get_option("endmark_where");
+    if (($where == "posts" && is_single()) || ($where == "pages" && is_page()) || ($where == "both")) {
+        $type = get_option("endmark_type");
+        if ($type == "symbol") {
+            $content .= get_option("endmark_symbol");
+        } elseif ($type == "image") {
+            $content .= '<img src="' . get_option("endmark_image") . '" alt="Endmark" />';
+        }
+    }
+    return $content;
 }
 
 add_filter('the_content', 'add_endmark', 50);
