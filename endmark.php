@@ -1,11 +1,12 @@
 <?php
 /*
 Plugin Name: Endmark
-Plugin URI: https://colintemple.com/
-Description: Adds an end-of-article symbol to posts/pages. Original code by Colin Temple, maintained by MENJ.
+Plugin URI: https://menj.net
+Description: Adds an end-of-article symbol to posts/pages. Originally developed by Colin Temple, now maintained by MENJ.
 Version: 2.1
-Author: Colin Temple, MENJ
-Author URI: https://colintemple.com/
+Author: MENJ
+Author URI: https://menj.net
+Donate link: https://www.paypal.com/paypalme/menj
 Text Domain: endmark
 */
 
