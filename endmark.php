@@ -4,7 +4,7 @@ Plugin Name: Endmark
 Plugin URI: https://menj.net
 Description: Adds an end-of-article symbol to posts/pages. Originally developed by Colin Temple, now maintained by MENJ.
 Version: 2.1
-Author: MENJ
+Author: MENJ (Original code by Colin Temple)
 Author URI: https://menj.net
 Donate link: https://www.paypal.com/paypalme/menj
 Text Domain: endmark
@@ -67,6 +67,18 @@ function endmark_settings_page() {
     <div class="wrap">
         <h1><?php esc_html_e('Endmark Settings', 'endmark'); ?></h1>
         
+        <div class="credit-notice" style="margin: 20px 0; padding: 15px; background: #f7f7f7;">
+            <p>
+                <?php
+                printf(
+                    __('Originally developed by %sColin Temple%s', 'endmark'),
+                    '<a href="http://colintemple.com/" target="_blank" rel="noopener">',
+                    '</a>'
+                );
+                ?>
+            </p>
+        </div>
+
         <?php if (isset($_GET['settings-updated'])) : ?>
             <div class="notice notice-success">
                 <p><?php esc_html_e('Settings saved successfully.', 'endmark'); ?></p>
@@ -153,7 +165,9 @@ function endmark_settings_page() {
     <?php
 }
 
-// Frontend functionality
+/**
+ * Adds endmark to content - original concept by Colin Temple
+ */
 function endmark_add_content($content) {
     if (is_admin()) return $content;
     
