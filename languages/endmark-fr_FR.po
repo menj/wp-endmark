@@ -1,0 +1,85 @@
+# French translation for Endmark
+# Copyright (C) 2024 MENJ
+msgid ""
+msgstr ""
+"Project-Id-Version: Endmark 4.1\n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgid "Settings"
+msgstr "Réglages"
+
+msgid "Endmark Settings"
+msgstr "Réglages Endmark"
+
+msgid "Endmark"
+msgstr "Endmark"
+
+msgid "Add a professional typographic endmark to your posts and pages."
+msgstr "Ajoutez un symbole de fin d'article professionnel à vos articles et pages."
+
+msgid "Endmark Type"
+msgstr "Type d'Endmark"
+
+msgid "Symbol"
+msgstr "Symbole"
+
+msgid "Image"
+msgstr "Image"
+
+msgid "Symbol Character"
+msgstr "Caractère du symbole"
+
+msgid "Click a symbol or type your own."
+msgstr "Cliquez sur un symbole ou tapez le vôtre."
+
+msgid "Endmark Image"
+msgstr "Image d'Endmark"
+
+msgid "Select Endmark Image"
+msgstr "Sélectionner l'image"
+
+msgid "Use this image"
+msgstr "Utiliser cette image"
+
+msgid "Upload Image"
+msgstr "Télécharger"
+
+msgid "Remove"
+msgstr "Supprimer"
+
+msgid "Recommended: 16-20px height, PNG with transparency."
+msgstr "Recommandé : 16-20px de hauteur, PNG avec transparence."
+
+msgid "Display Location"
+msgstr "Emplacement"
+
+msgid "Show endmark on"
+msgstr "Afficher sur"
+
+msgid "Posts only"
+msgstr "Articles uniquement"
+
+msgid "Pages only"
+msgstr "Pages uniquement"
+
+msgid "Posts and Pages"
+msgstr "Articles et pages"
+
+msgid "Live Preview"
+msgstr "Aperçu"
+
+msgid "This is how your endmark will appear at the end of your content, giving your articles a professional, polished finish."
+msgstr "Voici comment votre endmark apparaîtra à la fin de votre contenu."
+
+msgid "Save Changes"
+msgstr "Enregistrer"
+
+msgid "Changes apply immediately to all pages."
+msgstr "Les modifications s'appliquent immédiatement."
+
+msgid "You do not have sufficient permissions to access this page."
+msgstr "Vous n'avez pas les permissions suffisantes."
